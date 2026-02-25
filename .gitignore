@@ -1,0 +1,15 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+.venv/
+
+# Secrets
+.env
+.env.*
+*.pem
+
+# Runtime outputs
+data/reports/

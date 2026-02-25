@@ -1,0 +1,4 @@
+pydantic>=2.8
+rich>=13.7
+openai>=1.60.0
+streamlit>=1.41.0
