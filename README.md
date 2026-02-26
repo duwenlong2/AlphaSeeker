@@ -6,6 +6,8 @@
 
 目标：连续运行 7~14 天，稳定输出每日候选股票代码、理由、风险提示，并对建议做事后评估。
 
+策略定位：不追最后一段，优先拿稳健中段利润（分数阈值 + 追高过滤 + 现金缓冲）。
+
 ### 核心流程
 
 1. `watchlist`（股票池）
@@ -24,6 +26,43 @@ pip install -r requirements.txt
 python -m alphaseeker.cli scan --watchlist data/watchlist.txt --topn 5
 ```
 
+真实数据（AkShare）扫描示例：
+
+```bash
+python -m alphaseeker.cli scan --watchlist data/watchlist.txt --topn 5 --market-provider akshare --news-provider none
+```
+
+真实数据（yfinance）扫描示例：
+
+```bash
+python -m alphaseeker.cli scan --watchlist data/watchlist.txt --topn 5 --market-provider yfinance --news-provider none
+```
+
+真实数据（baostock）扫描示例：
+
+```bash
+python -m alphaseeker.cli scan --watchlist data/watchlist.txt --topn 5 --market-provider baostock --news-provider none
+```
+
+诊断输出：
+
+- 每次扫描都会输出“执行诊断”（环节、状态、耗时、错误详情）
+- 报告 JSON 内包含 `status`、`failed_stage`、`diagnostics`
+- 失败时可直接定位是 `market_data`、`news_data`、`ranking` 还是 `allocation` 环节
+
+一键启动预览页面（Windows PowerShell）：
+
+```powershell
+.\start.ps1
+```
+
+可选参数：
+
+```powershell
+.\start.ps1 -SkipInstall
+.\start.ps1 -Port 8502
+```
+
 运行后会在 `data/reports/` 生成当日推荐文件。
 
 预览页面（可选）：
@@ -35,8 +74,17 @@ streamlit run src/alphaseeker/preview_app.py
 页面说明：
 
 - 主页：股票扫描与结果预览
+- 主页支持数据源切换：`mock` / `akshare`
+- 持仓：手动维护当前持仓（SQLite 持久化）并估算浮动盈亏
+- 持仓：交易操作（买入/卖出）、持仓快照对比、历史交易流水
+- 观察评估：统计历史推荐样本的当前表现（胜率/平均收益）
 - Settings：模型配置与环境变量管理（仅写入 Windows 用户环境变量）
 - 测试功能：LLM 连通性测试（Azure/DeepSeek）
+
+持久化：
+
+- 本地数据库：`data/alphaseeker.db`
+- 扫描报告：`data/reports/scan_*.json`
 
 ## 目录
 
@@ -50,6 +98,7 @@ streamlit run src/alphaseeker/preview_app.py
 已整理完整能力清单（`skills` / `pipelines` / `providers`）：
 
 - docs 能力文档：`docs/capabilities.md`
+- docs MVP 蓝图：`docs/mvp_blueprint.md`
 
 其中包含：
 - `skills`：估值分、质量分、趋势分、新闻催化分、风险惩罚、综合排序

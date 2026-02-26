@@ -2,3 +2,6 @@ pydantic>=2.8
 rich>=13.7
 openai>=1.60.0
 streamlit>=1.41.0
+akshare>=1.15.0
+yfinance>=0.2.54
+baostock>=0.8.9

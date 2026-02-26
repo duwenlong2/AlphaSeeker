@@ -36,6 +36,13 @@ class Recommendation:
     catalyst_score: float
     trend_score: float
     risk_penalty: float
+    entry_price: float
     reason: str
     risk_note: str
+    regime_adjustment: float = 0.0
+    news_score: float = 50.0
+    news_event_count: int = 0
+    news_summary: str = ""
+    suggested_weight: float = 0.0
+    execution_note: str = ""
     generated_at: datetime = field(default_factory=datetime.utcnow)

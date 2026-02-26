@@ -69,3 +69,21 @@ def risk_penalty(s: StockSnapshot, symbol_news: list[NewsItem]) -> tuple[float, 
     if not notes:
         notes.append("无显著风险")
     return round(min(100.0, p), 2), "、".join(notes)
+
+
+def market_regime_signal(snapshots: list[StockSnapshot]) -> tuple[float, str]:
+    if not snapshots:
+        return 0.0, "中性市场"
+
+    chg_vals = [float(s.pct_chg_20d) for s in snapshots if s.pct_chg_20d is not None]
+    if not chg_vals:
+        return 0.0, "中性市场"
+
+    avg_chg = sum(chg_vals) / len(chg_vals)
+    breadth = sum(1 for v in chg_vals if v > 0) / len(chg_vals)
+
+    if avg_chg >= 8 and breadth >= 0.65:
+        return 2.0, "偏多市场"
+    if avg_chg <= -5 and breadth <= 0.40:
+        return -3.0, "偏空市场"
+    return 0.0, "震荡市场"
